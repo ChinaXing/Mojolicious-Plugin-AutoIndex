@@ -1,4 +1,5 @@
 use strict;
+
 # ABSTRACT: Mojolicious plugin for autoindex function at static resource
 use warnings;
 
@@ -50,18 +51,18 @@ sub register {
     return unless @{ $config->{index} };
     $app->hook(
         before_dispatch => sub {
-            my $c    = shift;
-            my $path = $c->req->url->path->to_string;
+            my $c = shift;
+            my $path = $c->stash('path') // $c->req->url->path->to_string;
             return unless $path =~ m!/$!;
-            my $sv_stash_path = $c->stash('path');
+            my $sv_path = $c->stash('path');
             foreach ( @{ $config->{index} } ) {
-                $c->stash( path => $path . $_ );
+                $c->stash->{path} = $path . $_;
                 if ( $app->static->dispatch($c) ) {
-                    $c->stash( path => $sv_stash_path );
+                    $c->stash->{path} = $sv_path;
                     return $app->plugins->emit_hook( after_static => $c );
                 }
             }
-            $c->stash( path => $sv_stash_path );
+            $c->stash->{path} = $sv_path;
         }
     );
 }
