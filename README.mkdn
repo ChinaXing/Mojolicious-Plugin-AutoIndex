@@ -4,7 +4,7 @@ Mojolicious::Plugin::AutoIndex - Mojolicious plugin for autoindex function at st
 
 # VERSION
 
-version 0.0005
+version 0.0006
 
 # SYNOPSIS
 
